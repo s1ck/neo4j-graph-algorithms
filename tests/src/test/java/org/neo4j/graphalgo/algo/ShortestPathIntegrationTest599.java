@@ -90,7 +90,7 @@ public class ShortestPathIntegrationTest599 {
 
         final String totalCostCommand = "" +
                 "MATCH (startNode {VID: 1}), (endNode {VID: 4})\n" +
-                "CALL algo.shortestPath(startNode, endNode, 'WEIGHT', {direction: 'OUTGOING'})\n" +
+                "CALL algo.shortestPath(startNode, endNode, {direction: 'OUTGOING', weightProperty: 'WEIGHT'})\n" +
                 "YIELD nodeCount, totalCost, loadMillis, evalMillis, writeMillis\n" +
                 "RETURN totalCost\n";
 
@@ -105,7 +105,7 @@ public class ShortestPathIntegrationTest599 {
 
         final String pathCommand = "" +
                 "MATCH (startNode {VID: 1}), (endNode {VID: 4})\n" +
-                "CALL algo.shortestPath.stream(startNode, endNode, 'WEIGHT', {direction: 'OUTGOING'})\n" +
+                "CALL algo.shortestPath.stream(startNode, endNode, {direction: 'OUTGOING', weightProperty: 'WEIGHT'})\n" +
                 "YIELD nodeId, cost\n" +
                 "MATCH (n1) WHERE id(n1) = nodeId\n" +
                 "RETURN n1.VID as id, cost as weight\n";

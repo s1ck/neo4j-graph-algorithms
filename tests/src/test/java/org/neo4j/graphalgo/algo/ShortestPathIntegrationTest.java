@@ -96,7 +96,7 @@ public class ShortestPathIntegrationTest {
         PathConsumer consumer = mock(PathConsumer.class);
         DB.execute(
                 "MATCH (start:Node{type:'start'}), (end:Node{type:'end'}) " +
-                        "CALL algo.shortestPath.stream(start, end, 'cost',{graph:'" + graphImpl + "'}) " +
+                        "CALL algo.shortestPath.stream(start, end, {graph:'" + graphImpl + "', weightProperty:'cost'}) " +
                         "YIELD nodeId, cost RETURN nodeId, cost")
                 .accept((Result.ResultVisitor<Exception>) row -> {
                     consumer.accept((Long) row.getNumber("nodeId"), (Double) row.getNumber("cost"));
@@ -113,7 +113,7 @@ public class ShortestPathIntegrationTest {
     public void testDijkstra() throws Exception {
         DB.execute(
                 "MATCH (start:Node{type:'start'}), (end:Node{type:'end'}) " +
-                        "CALL algo.shortestPath(start, end, 'cost',{graph:'" + graphImpl + "', write:true, writeProperty:'step'}) " +
+                        "CALL algo.shortestPath(start, end, {graph:'" + graphImpl + "', weightProperty:'cost', write:true, writeProperty:'step'}) " +
                         "YIELD loadMillis, evalMillis, writeMillis, nodeCount, totalCost\n" +
                         "RETURN loadMillis, evalMillis, writeMillis, nodeCount, totalCost")
                 .accept((Result.ResultVisitor<Exception>) row -> {

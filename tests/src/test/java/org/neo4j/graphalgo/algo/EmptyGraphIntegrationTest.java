@@ -360,13 +360,13 @@ public class EmptyGraphIntegrationTest {
 
     @Test
     public void testShortestPathStream() throws Exception {
-        Result result = db.execute("CALL algo.shortestPath.stream(null, null, '', {graph:'" + graphImpl + "'})");
+        Result result = db.execute("CALL algo.shortestPath.stream(null, null, {graph:'" + graphImpl + "'})");
         assertFalse(result.hasNext());
     }
 
     @Test
     public void testShortestPath() throws Exception {
-        db.execute("CALL algo.shortestPath(null, null, '', {graph:'" + graphImpl + "'})")
+        db.execute("CALL algo.shortestPath(null, null, {graph:'" + graphImpl + "'})")
                 .accept((Result.ResultVisitor<Exception>) row -> {
                     assertEquals(0L, row.getNumber("nodeCount"));
                     return true;

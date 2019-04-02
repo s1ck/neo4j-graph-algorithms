@@ -125,19 +125,18 @@ public class ShortestPathTest_152 {
         // see https://github.com/neo4j-contrib/neo4j-graph-algorithms/issues/722 and fix test afterwards
         verify(mock, times(1)).accept(eq(0.0));
         verify(mock, times(1)).accept(eq(50.0));
-        verify(mock, times(1)).accept(eq(90.0));
-        verify(mock, times(1)).accept(eq(120.0));
-        verify(mock, times(1)).accept(eq(140.0));
+        verify(mock, times(1)).accept(eq(80.0));
+        verify(mock, times(1)).accept(eq(100.0));
     }
 
     @Test
-    public void testDijkstraProcedure() {
+    public void testDirectViaProcedure() {
 
         DoubleConsumer mock = mock(DoubleConsumer.class);
 
         String cypher = "MATCH (from:Loc{name:'A'}), (to:Loc{name:'F'}) " +
-                "CALL algo.shortestPath.stream(from, to, 'd', {relationshipQuery:'ROAD', defaultValue:999999.0}) " +
-                "YIELD nodeId, cost with nodeId, cost MATCH(n) WHERE id(n) = nodeId RETURN n.name as name, cost;";
+                        "CALL algo.shortestPath.stream(from, to, {relationshipQuery:'ROAD', weightProperty:'d', defaultValue:999999.0}) " +
+                        "YIELD nodeId, cost with nodeId, cost MATCH(n) WHERE id(n) = nodeId RETURN n.name as name, cost;";
 
         DB.execute(cypher).accept(row -> {
             System.out.println(row.get("name") + ":" + row.get("cost"));
