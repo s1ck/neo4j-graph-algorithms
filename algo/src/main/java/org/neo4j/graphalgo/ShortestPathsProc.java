@@ -58,12 +58,11 @@ public class ShortestPathsProc {
     public KernelTransaction transaction;
 
     @Procedure("algo.shortestPaths.stream")
-    @Description("CALL algo.shortestPaths.stream(startNode:Node, weightProperty:String" +
-            "{nodeQuery:'labelName', relationshipQuery:'relationshipName', defaultValue:1.0}) " +
+    @Description("CALL algo.shortestPaths.stream(startNode:Node" +
+            "{nodeQuery:'labelName', relationshipQuery:'relationshipName', weightProperty:null, defaultValue:1.0}) " +
             "YIELD nodeId, distance - yields a stream of {nodeId, cost} from start to end (inclusive)")
     public Stream<ShortestPaths.Result> dijkstraStream(
             @Name("startNode") Node startNode,
-            @Name("propertyName") String propertyName,
             @Name(value = "config", defaultValue = "{}")
                     Map<String, Object> config) {
 
@@ -72,7 +71,7 @@ public class ShortestPathsProc {
         final Graph graph = new GraphLoader(api, Pools.DEFAULT)
                 .init(log, configuration.getNodeLabelOrQuery(),configuration.getRelationshipOrQuery(),configuration)
                 .withOptionalRelationshipWeightsFromProperty(
-                        propertyName,
+                        configuration.getWeightProperty(),
                         configuration.getWeightPropertyDefaultValue(1.0))
                 .withDirection(Direction.OUTGOING)
                 .load(configuration.getGraphImpl());
@@ -91,12 +90,11 @@ public class ShortestPathsProc {
     }
 
     @Procedure(value = "algo.shortestPaths", mode = Mode.WRITE)
-    @Description("CALL algo.shortestPaths(startNode:Node, weightProperty:String" +
-            "{write:true, targetProperty:'path', nodeQuery:'labelName', relationshipQuery:'relationshipName', defaultValue:1.0}) " +
+    @Description("CALL algo.shortestPaths(startNode:Node" +
+            "{write:true, targetProperty:'path', nodeQuery:'labelName', relationshipQuery:'relationshipName', weightProperty:null, defaultValue:1.0}) " +
             "YIELD loadDuration, evalDuration, writeDuration, nodeCount, targetProperty - yields nodeCount, totalCost, loadDuration, evalDuration")
     public Stream<ShortestPathResult> dijkstra(
             @Name("startNode") Node startNode,
-            @Name("propertyName") String propertyName,
             @Name(value = "config", defaultValue = "{}")
                     Map<String, Object> config) {
 
@@ -108,7 +106,7 @@ public class ShortestPathsProc {
         final Graph graph = new GraphLoader(api, Pools.DEFAULT)
                 .init(log, configuration.getNodeLabelOrQuery(), configuration.getRelationshipOrQuery(), configuration)
                 .withOptionalRelationshipWeightsFromProperty(
-                        propertyName,
+                        configuration.getWeightProperty(),
                         configuration.getWeightPropertyDefaultValue(1.0))
                 .withDirection(Direction.OUTGOING)
                 .load(configuration.getGraphImpl());

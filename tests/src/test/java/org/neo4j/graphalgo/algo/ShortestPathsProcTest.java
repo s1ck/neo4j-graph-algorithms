@@ -126,7 +126,7 @@ public final class ShortestPathsProcTest {
 
         final DoubleConsumer consumer = mock(DoubleConsumer.class);
 
-        final String cypher = "MATCH(n:Node {name:'s'}) WITH n CALL algo.shortestPaths.stream(n, 'cost',{graph:'" + graphImpl + "'}) " +
+        final String cypher = "MATCH(n:Node {name:'s'}) WITH n CALL algo.shortestPaths.stream(n, {graph:'" + graphImpl + "', weightProperty:'cost'}) " +
                 "YIELD nodeId, distance RETURN nodeId, distance";
 
         api.execute(cypher).accept(row -> {
@@ -149,7 +149,7 @@ public final class ShortestPathsProcTest {
     @Test
     public void testWriteBack() throws Exception {
 
-        final String matchCypher = "MATCH(n:Node {name:'s'}) WITH n CALL algo.shortestPaths(n, 'cost', {write:true, writeProperty:'sp',graph:'" + graphImpl + "'}) " +
+        final String matchCypher = "MATCH(n:Node {name:'s'}) WITH n CALL algo.shortestPaths(n, {write:true, writeProperty:'sp',graph:'" + graphImpl + "', weightProperty:'cost'}) " +
                 "YIELD nodeCount, loadDuration, evalDuration, writeDuration RETURN nodeCount, loadDuration, evalDuration, writeDuration";
 
         api.execute(matchCypher).accept(row -> {
@@ -182,7 +182,7 @@ public final class ShortestPathsProcTest {
 
         final Consumer mock = mock(Consumer.class);
 
-        final String cypher = "MATCH(n:Node {name:'x'}) WITH n CALL algo.shortestPaths.stream(n, 'cost',{graph:'" + graphImpl + "'}) " +
+        final String cypher = "MATCH(n:Node {name:'x'}) WITH n CALL algo.shortestPaths.stream(n, {graph:'" + graphImpl + "', weightProperty:'cost'}) " +
                 "YIELD nodeId, distance RETURN nodeId, distance";
 
         api.execute(cypher).accept(row -> {
