@@ -153,7 +153,7 @@ public class EmptyGraphIntegrationTest {
 
     @Test
     public void testAllShortestPathsStream() {
-        Result result = db.execute("CALL algo.allShortestPaths.stream('',{graph:'" + graphImpl + "'})");
+        Result result = db.execute("CALL algo.allShortestPaths.stream({graph:'" + graphImpl + "'})");
         assertFalse(result.hasNext());
     }
 

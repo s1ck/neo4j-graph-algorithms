@@ -57,11 +57,10 @@ public class AllShortestPathsProc {
     public KernelTransaction transaction;
 
     @Procedure("algo.allShortestPaths.stream")
-    @Description("CALL algo.allShortestPaths.stream(weightProperty:String" +
-            "{nodeQuery:'labelName', relationshipQuery:'relationshipName', defaultValue:1.0, concurrency:4}) " +
+    @Description("CALL algo.allShortestPaths.stream(" +
+            "{nodeQuery:'labelName', relationshipQuery:'relationshipName', weightProperty:null, defaultValue:1.0, concurrency:4}) " +
             "YIELD sourceNodeId, targetNodeId, distance - yields a stream of {sourceNodeId, targetNodeId, distance}")
     public Stream<AllShortestPaths.Result> allShortestPathsStream(
-            @Name(value = "propertyName") String propertyName,
             @Name(value = "config", defaultValue = "{}")
                     Map<String, Object> config) {
 
@@ -70,11 +69,12 @@ public class AllShortestPathsProc {
         Direction direction = configuration.getDirection(Direction.BOTH);
 
         AllocationTracker tracker = AllocationTracker.create();
+        String weightProperty = configuration.getWeightProperty();
         GraphLoader graphLoader = new GraphLoader(api, Pools.DEFAULT)
                 .withOptionalLabel(configuration.getNodeLabelOrQuery())
                 .withOptionalRelationshipType(configuration.getRelationshipOrQuery())
                 .withOptionalRelationshipWeightsFromProperty(
-                        propertyName,
+                        weightProperty,
                         configuration.getWeightPropertyDefaultValue(1.0))
                 .withConcurrency(configuration.getConcurrency())
                 .withAllocationTracker(tracker);
@@ -96,7 +96,7 @@ public class AllShortestPathsProc {
         final MSBFSASPAlgorithm<?> algo;
 
         // use MSBFS ASP if no weightProperty is set
-        if (null == propertyName || propertyName.isEmpty()) {
+        if (null == weightProperty || weightProperty.isEmpty()) {
             if (graph instanceof HugeGraph) {
                 HugeGraph hugeGraph = (HugeGraph) graph;
                 algo = new HugeMSBFSAllShortestPaths(

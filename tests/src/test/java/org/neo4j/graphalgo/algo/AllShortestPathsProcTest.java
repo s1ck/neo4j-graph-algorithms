@@ -128,7 +128,7 @@ public final class AllShortestPathsProcTest {
 
         final Consumer consumer = mock(Consumer.class);
 
-        final String cypher = "CALL algo.allShortestPaths.stream('', {graph:'"+graphImpl+"', direction: 'OUTGOING'}) " +
+        final String cypher = "CALL algo.allShortestPaths.stream({graph:'"+graphImpl+"', direction: 'OUTGOING'}) " +
                 "YIELD sourceNodeId, targetNodeId, distance RETURN sourceNodeId, targetNodeId, distance";
 
         api.execute(cypher).accept(row -> {
@@ -148,15 +148,12 @@ public final class AllShortestPathsProcTest {
 
     }
 
-
-
-
     @Test
     public void testMSBFSASPIncoming() throws Exception {
 
         final Consumer consumer = mock(Consumer.class);
 
-        final String cypher = "CALL algo.allShortestPaths.stream('', {graph:'"+graphImpl+"', direction: 'INCOMING'}) " +
+        final String cypher = "CALL algo.allShortestPaths.stream({graph:'"+graphImpl+"', direction: 'INCOMING'}) " +
                 "YIELD sourceNodeId, targetNodeId, distance RETURN sourceNodeId, targetNodeId, distance";
 
         api.execute(cypher).accept(row -> {
@@ -175,14 +172,13 @@ public final class AllShortestPathsProcTest {
         verify(consumer, times(1)).test(eq(targetNodeId), eq(startNodeId), eq(4.0));
     }
 
-
     @Test
     @Ignore
     public void testWeightedASP() throws Exception {
 
         final Consumer consumer = mock(Consumer.class);
 
-        final String cypher = "CALL algo.allShortestPaths.stream('cost', {graph:'"+graphImpl+"', direction: 'OUTGOING'}) " +
+        final String cypher = "CALL algo.allShortestPaths.stream({graph:'"+graphImpl+"', weightProperty:'cost', direction: 'OUTGOING'}) " +
                 "YIELD sourceNodeId, targetNodeId, distance RETURN sourceNodeId, targetNodeId, distance";
 
         api.execute(cypher).accept(row -> {
@@ -199,7 +195,6 @@ public final class AllShortestPathsProcTest {
         });
 
         verify(consumer, times(1)).test(eq(startNodeId), eq(targetNodeId), eq(8.0));
-
     }
 
     private interface Consumer {
