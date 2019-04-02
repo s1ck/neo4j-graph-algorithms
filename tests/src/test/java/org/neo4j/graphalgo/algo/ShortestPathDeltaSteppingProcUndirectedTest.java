@@ -119,7 +119,7 @@ public final class ShortestPathDeltaSteppingProcUndirectedTest {
 
         final DoubleConsumer consumer = mock(DoubleConsumer.class);
 
-        final String cypher = "MATCH(n:Node {name:'x'}) WITH n CALL algo.shortestPath.deltaStepping.stream(n, 'cost', 3.0,{graph:'"+graphImpl+"', direction: 'OUTGOING'}) " +
+        final String cypher = "MATCH(n:Node {name:'x'}) WITH n CALL algo.shortestPath.deltaStepping.stream(n, 3.0, {graph:'"+graphImpl+"', weightProperty:'cost', direction: 'OUTGOING'}) " +
                 "YIELD nodeId, distance RETURN nodeId, distance";
 
         api.execute(cypher).accept(row -> {
@@ -142,7 +142,7 @@ public final class ShortestPathDeltaSteppingProcUndirectedTest {
 
         final DoubleConsumer consumer = mock(DoubleConsumer.class);
 
-        final String cypher = "MATCH(n:Node {name:'x'}) WITH n CALL algo.shortestPath.deltaStepping.stream(n, 'cost', 3.0,{graph:'"+graphImpl+"'}) " +
+        final String cypher = "MATCH(n:Node {name:'x'}) WITH n CALL algo.shortestPath.deltaStepping.stream(n, 3.0, {graph:'"+graphImpl+"', weightProperty:'cost'}) " +
                 "YIELD nodeId, distance RETURN nodeId, distance";
 
         api.execute(cypher).accept(row -> {

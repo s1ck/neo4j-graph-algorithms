@@ -123,7 +123,7 @@ public final class ShortestPathDeltaSteppingProcTest {
 
         final DoubleConsumer consumer = mock(DoubleConsumer.class);
 
-        final String cypher = "MATCH(n:Node {name:'s'}) WITH n CALL algo.shortestPath.deltaStepping.stream(n, 'cost', 3.0,{graph:'"+graphImpl+"'}) " +
+        final String cypher = "MATCH(n:Node {name:'s'}) WITH n CALL algo.shortestPath.deltaStepping.stream(n, 3.0,{graph:'"+graphImpl+"', weightProperty:'cost'}) " +
                 "YIELD nodeId, distance RETURN nodeId, distance";
 
         api.execute(cypher).accept(row -> {
@@ -146,7 +146,7 @@ public final class ShortestPathDeltaSteppingProcTest {
 
         final DoubleConsumer consumer = mock(DoubleConsumer.class);
 
-        final String cypher = "MATCH(n:Node {name:'s'}) WITH n CALL algo.shortestPath.deltaStepping.stream(n, 'cost', 3.0,{graph:'"+graphImpl+"', direction: 'INCOMING'}) " +
+        final String cypher = "MATCH(n:Node {name:'s'}) WITH n CALL algo.shortestPath.deltaStepping.stream(n, 3.0,{graph:'"+graphImpl+"', weightProperty:'cost', direction: 'INCOMING'}) " +
                 "YIELD nodeId, distance RETURN nodeId, distance";
 
         api.execute(cypher).accept(row -> {
@@ -167,7 +167,7 @@ public final class ShortestPathDeltaSteppingProcTest {
     @Test
     public void testWriteBack() throws Exception {
 
-        final String matchCypher = "MATCH(n:Node {name:'s'}) WITH n CALL algo.shortestPath.deltaStepping(n, 'cost', 3.0, {write:true, writeProperty:'sp', graph:'"+graphImpl+"'}) " +
+        final String matchCypher = "MATCH(n:Node {name:'s'}) WITH n CALL algo.shortestPath.deltaStepping(n, 3.0, {write:true, weightProperty:'cost', writeProperty:'sp', graph:'"+graphImpl+"'}) " +
                 "YIELD nodeCount, loadDuration, evalDuration, writeDuration RETURN nodeCount, loadDuration, evalDuration, writeDuration";
 
         api.execute(matchCypher).accept(row -> {

@@ -399,13 +399,13 @@ public class EmptyGraphIntegrationTest {
 
     @Test
     public void testShortestPathsDeltaSteppingStream() throws Exception {
-        Result result = db.execute("CALL algo.shortestPath.deltaStepping.stream(null, '', 0, {graph:'" + graphImpl + "'})");
+        Result result = db.execute("CALL algo.shortestPath.deltaStepping.stream(null, 0, {graph:'" + graphImpl + "'})");
         assertFalse(result.hasNext());
     }
 
     @Test
     public void testShortestPathsDeltaStepping() throws Exception {
-        db.execute("CALL algo.shortestPath.deltaStepping(null, '', 0, {graph:'" + graphImpl + "'})")
+        db.execute("CALL algo.shortestPath.deltaStepping(null, 0, {graph:'" + graphImpl + "'})")
                 .accept((Result.ResultVisitor<Exception>) row -> {
                     assertEquals(0L, row.getNumber("nodeCount"));
                     return true;

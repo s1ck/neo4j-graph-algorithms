@@ -44,7 +44,7 @@ import java.util.stream.Stream;
  * Delta-Stepping is a non-negative single source shortest paths (NSSSP) algorithm
  * to calculate the length of the shortest paths from a starting node to all other
  * nodes in the graph. It can be tweaked using the delta-parameter which controls
- * the grade of concurrency.<br>
+ * the degree of concurrency.<br>
  * <p>
  * More information in:<br>
  * <p>
@@ -70,12 +70,11 @@ public class ShortestPathDeltaSteppingProc {
     public KernelTransaction transaction;
 
     @Procedure("algo.shortestPath.deltaStepping.stream")
-    @Description("CALL algo.shortestPath.deltaStepping.stream(startNode:Node, weightProperty:String, delta:Double" +
-            "{label:'labelName', relationship:'relationshipName', defaultValue:1.0, concurrency:4}) " +
+    @Description("CALL algo.shortestPath.deltaStepping.stream(startNode:Node, delta:Double" +
+            "{label:'labelName', relationship:'relationshipName', weightProperty:null, defaultValue:1.0, concurrency:4}) " +
             "YIELD nodeId, distance - yields a stream of {nodeId, distance} from start to end (inclusive)")
     public Stream<ShortestPathDeltaStepping.DeltaSteppingResult> deltaSteppingStream(
             @Name("startNode") Node startNode,
-            @Name("propertyName") String propertyName,
             @Name("delta") Double delta,
             @Name(value = "config", defaultValue = "{}")
                     Map<String, Object> config) {
@@ -85,8 +84,8 @@ public class ShortestPathDeltaSteppingProc {
 
         GraphLoader graphLoader = new GraphLoader(api, Pools.DEFAULT)
                 .init(log, configuration.getNodeLabelOrQuery(), configuration.getRelationshipOrQuery(), configuration)
-                .withRelationshipWeightsFromProperty(
-                        propertyName,
+                .withOptionalRelationshipWeightsFromProperty(
+                        configuration.getWeightProperty(),
                         configuration.getWeightPropertyDefaultValue(Double.MAX_VALUE));
 
         if(direction == Direction.BOTH) {
@@ -115,12 +114,11 @@ public class ShortestPathDeltaSteppingProc {
     }
 
     @Procedure(value = "algo.shortestPath.deltaStepping", mode = Mode.WRITE)
-    @Description("CALL algo.shortestPath.deltaStepping(startNode:Node, weightProperty:String, delta:Double" +
-            "{label:'labelName', relationship:'relationshipName', defaultValue:1.0, write:true, writeProperty:'sssp'}) " +
+    @Description("CALL algo.shortestPath.deltaStepping(startNode:Node, delta:Double" +
+            "{label:'labelName', relationship:'relationshipName', weightProperty:null, defaultValue:1.0, write:true, writeProperty:'sssp'}) " +
             "YIELD loadDuration, evalDuration, writeDuration, nodeCount")
     public Stream<DeltaSteppingProcResult> deltaStepping(
             @Name("startNode") Node startNode,
-            @Name("propertyName") String propertyName,
             @Name("delta") Double delta,
             @Name(value = "config", defaultValue = "{}")
                     Map<String, Object> config) {
@@ -134,8 +132,8 @@ public class ShortestPathDeltaSteppingProc {
         try (ProgressTimer timer = builder.timeLoad()) {
             GraphLoader graphLoader = new GraphLoader(api, Pools.DEFAULT)
                     .init(log, configuration.getNodeLabelOrQuery(), configuration.getRelationshipOrQuery(), configuration)
-                    .withRelationshipWeightsFromProperty(
-                            propertyName,
+                    .withOptionalRelationshipWeightsFromProperty(
+                            configuration.getWeightProperty(),
                             configuration.getWeightPropertyDefaultValue(Double.MAX_VALUE));
 
             if(direction == Direction.BOTH) {
